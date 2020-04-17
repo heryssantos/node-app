@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Simple Chat - Ezops Test</title>
+<!-- include boostrap and jquery cdn -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="js/jquery-3.5.0.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<br>
+	<div class="jumbotron">
+		<h1 class="display-4"> Send Message</h1>
+		<br>
+		<input id="name" class="form-control" placeholder="Name">
+		<br>
+		<textarea id="message" class="form-control" placeholder="Your message here."></textarea>
+		<br>
+		<button id="send" class="btn btn-success">Send</button>
+	</div>
+	<div id="messages">
+
+	</div>
+</div>
+<script src="js/socket.io.js"></script>
+<script>
+	var socket = io();
+	
+	$(() => {
+		$("#send").click(() => { 
+			sendMessage({
+				name: $("#name").val(), 
+				message: $("#message").val()
+			});
+		});
+		getMessages();
+	});
+	
+	function addMessages(message){
+		$("#messages").append(`
+			<h4> ${message.name} </h4> 
+			<p> ${message.message} </p>`);
+	}
+
+	socket.on('message', addMessages);
+
+	function getMessages(){
+		$.get('http://localhost:3000/messages', (data) => { 
+			data.forEach(addMessages); 
+		})
+	}
+
+	function sendMessage(message){
+		$.post('http://localhost:3000/messages', message)
+	}
+
+</script>
+</body>
+</html>
