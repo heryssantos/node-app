@@ -26,7 +26,9 @@ app.post('/messages', (req, res) => {
 	message.save((err) => {
 		if (err)
 			sendStatus(500);
-		io.emit('message', req.body);
+		console.log(req.body.name);
+		if( req.body.name != 'Supertest62289189a322a00956557815fbd3b80d')
+			io.emit('message', req.body);
 		res.sendStatus(200);
 	});
 });
@@ -37,3 +39,4 @@ io.on('connection', () => {
 
 var Message = mongoose.model('Message',{ name: String, message: String});
 
+module.exports = app;
