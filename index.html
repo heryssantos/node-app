@@ -10,16 +10,22 @@
 
 <div class="container">
 	<br>
-	<div class="jumbotron">
-		<h1 class="display-4"> Send Message</h1>
-		<br>
-		<input id="name" class="form-control" placeholder="Name">
-		<br>
-		<textarea id="message" class="form-control" placeholder="Your message here."></textarea>
-		<br>
-		<button id="send" class="btn btn-success">Send</button>
+	<div class="alert alert-secondary">
+		<div class="col-md-12">
+			<h3 class="display-6"> Send a message</h3>
+		</div>
+		
+			<div class="input-group mb-3">
+				<div class="col-md-2 col-sm-12">
+					<input id="name" class="form-control" placeholder="Your Name"> 
+				</div>	
+				<input id="message" class="form-control rounded-left" placeholder="Your Message Here"> 		
+				<div class="input-group-append">
+					<button id="send" class="btn btn-success">Send</button>
+				</div>
+			</div>
 	</div>
-	<div id="messages">
+	<div id="messages" class="container">
 
 	</div>
 </div>
@@ -27,6 +33,10 @@
 <script>
 	var socket = io();
 	
+	$(document).ready(function(){
+
+	});
+
 	$(() => {
 		$("#send").click(() => { 
 			sendMessage({
@@ -38,21 +48,26 @@
 	});
 	
 	function addMessages(message){
-		$("#messages").append(`
-			<h4> ${message.name} </h4> 
-			<p> ${message.message} </p>`);
+		$("#messages").prepend(`
+		<div class="row">
+		<div class="alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-send"></span>
+			<span>${message.name}: ${message.message}</span> 
+		</div>
+		</div>`);
 	}
 
 	socket.on('message', addMessages);
 
 	function getMessages(){
-		$.get('http://localhost:3000/messages', (data) => { 
+		$.get('/messages', (data) => { 
 			data.forEach(addMessages); 
 		})
 	}
 
 	function sendMessage(message){
-		$.post('http://localhost:3000/messages', message)
+		$.post('/messages', message)
+		$("#name").attr('readonly', true)
 	}
 
 </script>
